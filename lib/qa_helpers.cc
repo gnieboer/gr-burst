@@ -2,7 +2,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/TestCase.h>
 
+#ifndef _MSC_VER
 #include <glob.h>
+#endif 
 #include <string>
 
 #include <iostream>
@@ -170,13 +172,15 @@ void qa_helpers::areUCharVectorsEqual(std::vector<unsigned char> expectedVec, st
 }
 
 std::vector<std::string> qa_helpers::getFilesInDir(const std::string& pat) {
+    std::vector<std::string> ret;
+#ifndef _MSC_VER  //This code doesn't appear to be called by anything, and windows doesn't have glob so would need to be redesigned if needed.
     glob_t glob_result;
     glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
-    std::vector<std::string> ret;
     for(unsigned int i=0;i<glob_result.gl_pathc;++i){
         ret.push_back(std::string(glob_result.gl_pathv[i]));
     }
     globfree(&glob_result);
+#endif 
     return ret;
 }
 
