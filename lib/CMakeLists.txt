@@ -66,6 +66,7 @@ target_link_libraries(
   ${Boost_LIBRARIES}
   ${CPPUNIT_LIBRARIES}
   ${MAPPER_LIBRARIES}
+  ${LOG4CPP_LIBRARIES}
   gnuradio-burst
 )
 

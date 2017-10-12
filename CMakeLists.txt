@@ -89,7 +89,7 @@ find_package(CppUnit)
 find_package(mapper)
 find_package(GSL)
 find_package(Volk)
-
+find_package(Log4Cpp)
 # To run a more advanced search for GNU Radio and it's components and
 # versions, use the following. Add any components required to the list
 # of GR_REQUIRED_COMPONENTS (in all caps) and change "version" to the

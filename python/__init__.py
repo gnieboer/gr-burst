@@ -55,15 +55,11 @@ from slicer import *
 from tofpdu import *
 from deframer import *
 from framealign import *
-from fsk_time_sync import fsk_time_sync
 from randomizer import *
 from preamble_insert import *
 from preamble_correlator import *
 from length_detect import *
 from cpdu_matlab_writer import *
-#from synchronizer import *
-#from synchronizer_v2 import *
-from synchronizer_v3 import *
 from arq import *
 from random_drop import *
 from padder import *
