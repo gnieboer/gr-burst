@@ -24,7 +24,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "interp_cpdu_impl.h"
-#include <gnuradio/filter/interp_fir_filter_ccf.h>
+#include <gnuradio/filter/interp_fir_filter.h>
 #include <gnuradio/filter/firdes.h>
 #include <volk/volk.h>
 

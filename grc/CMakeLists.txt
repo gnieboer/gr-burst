@@ -17,30 +17,30 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 install(FILES
-    burst_arq.xml
-    burst_random_drop.xml
-    burst_padder.xml
-    burst_scheduler.xml
-    burst_scheduler2.xml
-    burst_unpacker.xml
-    burst_packer.xml
-    burst_framer.xml
-    burst_slicer.xml
-    burst_tofpdu.xml
-    burst_deframer.xml
-    burst_framealign.xml
-    burst_deframer.xml
-    burst_preamble_insert.xml
-    burst_preamble_correlator.xml
-    burst_randomizer.xml
-    burst_interp_cpdu.xml 
-	burst_correlator_filter.xml
-	burst_length_detect.xml
-    burst_cpdu_matlab_writer.xml
-    #burst_synchronizer.xml
-    #burst_synchronizer_v2.xml
-    #burst_synchronizer_v3.xml
-    burst_decoder.xml
-    burst_length_detect_c.xml
-    burst_synchronizer_v4.xml DESTINATION share/gnuradio/grc/blocks
+    burst_arq.block.yml
+    burst_random_drop.block.yml
+    burst_padder.block.yml
+    burst_scheduler.block.yml
+    burst_scheduler2.block.yml
+    burst_unpacker.block.yml
+    burst_packer.block.yml
+    burst_framer.block.yml
+    burst_slicer.block.yml
+    burst_tofpdu.block.yml
+    burst_deframer.block.yml
+    burst_framealign.block.yml
+    burst_deframer.block.yml
+    burst_preamble_insert.block.yml
+    burst_preamble_correlator.block.yml
+    burst_randomizer.block.yml
+    burst_interp_cpdu.block.yml 
+	burst_correlator_filter.block.yml
+	burst_length_detect.block.yml
+    burst_cpdu_matlab_writer.block.yml
+    #burst_synchronizer.block.yml
+    #burst_synchronizer_v2.block.yml
+    #burst_synchronizer_v3.block.yml
+    burst_decoder.block.yml
+    burst_length_detect_c.block.yml
+    burst_synchronizer_v4.block.yml DESTINATION share/gnuradio/grc/blocks
 )

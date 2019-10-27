@@ -15,7 +15,7 @@ class randomizer(gr.sync_block):
         for p in poly:
             assert(len(init) >= p)
 
-        print "pregenerating randomizer"
+        print ("pregenerating randomizer")
         a = time.time();
         self.seq = [];
         for i in range(0,gensteps):
@@ -27,7 +27,7 @@ class randomizer(gr.sync_block):
             init = [out] + init[:-1];   # shift       
             self.seq.append(out);
         b = time.time();
-        print "pregenerating randomizer done (%f seconds)"%(b-a);
+        print ("pregenerating randomizer done (%f seconds)"%(b-a));
         #print self.seq;
 
     def handler(self, msg):

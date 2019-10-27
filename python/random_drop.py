@@ -16,7 +16,7 @@ class random_drop(gr.sync_block):
     def run(self):
         time.sleep(self.delay);
         msg = self.q.get();
-        print msg
+        print (msg)
         self.message_port_pub(pmt.intern("pdus"), msg);
 
     def handler(self, msg):
