@@ -47,7 +47,7 @@ class framer(gr.sync_block):
         
         # convert the unpacked bits to a list and back into a pmt u8vector
         burst_bits = pmt.init_u8vector(len(ba), ba.tolist());
-        print "Tx Packet: " + ":".join("{:02x}".format(ord(c)) for c in ba.tobytes()[0:8])
+        print ("Tx Packet: " + ":".join("{:02x}".format(ord(c)) for c in ba.tobytes()[0:8]))
         
         # make the new pdu
         pdu = pmt.cons(meta, burst_bits);

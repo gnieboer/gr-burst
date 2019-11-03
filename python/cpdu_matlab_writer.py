@@ -31,7 +31,7 @@ class cpdu_matlab_writer(gr.sync_block):
  
         #fn = "/tmp/cpdu_burst_%f.txt"%(time.time());       
         fn = "/tmp/cpdu_burst_%f.txt"%(self.idx);       
-        print "writing %s"%(fn);
+        print ("writing %s"%(fn));
         f = open(fn,"w");
         x = ", ".join( map( lambda x: "%f+%fj"%(x.real, x.imag), x) );
         f.write("x = [%s]\n"%(str(x))); 

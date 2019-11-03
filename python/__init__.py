@@ -24,52 +24,35 @@ description here (python/__init__.py).
 '''
 
 # ----------------------------------------------------------------
-# Temporary workaround for ticket:181 (swig+python problem)
-import sys
-_RTLD_GLOBAL = 0
-try:
-    from dl import RTLD_GLOBAL as _RTLD_GLOBAL
-except ImportError:
-    try:
-	from DLFCN import RTLD_GLOBAL as _RTLD_GLOBAL
-    except ImportError:
-	pass
 
-if _RTLD_GLOBAL != 0:
-    _dlopenflags = sys.getdlopenflags()
-    sys.setdlopenflags(_dlopenflags|_RTLD_GLOBAL)
-# ----------------------------------------------------------------
 
 
 # import swig generated symbols into the burst namespace
-from burst_swig import *
+from __future__ import unicode_literals
+# import swig generated symbols into the kodiak namespace
+try:
+    # this might fail if the module is python-only
+    from .burst_swig import *
+except ImportError:
+    pass
 
 # import any pure python here
 #
-from burst_scheduler import *
-from burst_scheduler2 import *
-from unpacker import *
-from packer import *
-from framer import *
-from slicer import *
-from tofpdu import *
-from deframer import *
-from framealign import *
-from fsk_time_sync import fsk_time_sync
-from randomizer import *
-from preamble_insert import *
-from preamble_correlator import *
-from length_detect import *
-from cpdu_matlab_writer import *
-#from synchronizer import *
-#from synchronizer_v2 import *
-from synchronizer_v3 import *
-from arq import *
-from random_drop import *
-from padder import *
+from .burst_scheduler import burst_scheduler
+from .burst_scheduler2 import burst_scheduler2 
+from .unpacker import unpacker
+from .packer import packer
+from .framer import framer
+from .slicer import slicer
+from .tofpdu import tofpdu
+from .deframer import deframer
+from .framealign import framealign
+from .randomizer import randomizer
+from .preamble_insert import preamble_insert
+from .preamble_correlator import preamble_correlator
+from .length_detect import length_detect
+from .cpdu_matlab_writer import cpdu_matlab_writer
+from .arq import arq
+from .random_drop import random_drop
+from .padder import padder
 
-# ----------------------------------------------------------------
-# Tail of workaround
-if _RTLD_GLOBAL != 0:
-    sys.setdlopenflags(_dlopenflags)      # Restore original flags
-# ----------------------------------------------------------------

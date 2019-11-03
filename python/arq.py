@@ -38,19 +38,19 @@ class arq(gr.sync_block):
 
     def run(self):
         while True:
-            print "Rx: %d  Tx: %d  ReTx: %d  AckTx: %d AckRx: %d MaxAttempts: %d Watching: %d"% (
+            print ("Rx: %d  Tx: %d  ReTx: %d  AckTx: %d AckRx: %d MaxAttempts: %d Watching: %d"% (
                      self.rx_cnt, self.tx_cnt, self.rtx_cnt, 
                      self.ack_tx_cnt, self.ack_rx_cnt, self.max_at,
-                     len(self.rx_record.keys()));
+                     len(self.rx_record.keys())));
 
             now = time.time();
             # send retransmissions after non-ack for a while
             for seq in self.retrans.keys():
                 if(now - self.retrans[seq]["time_last"]  > self.timeout):
-                    print "timeout on seq %d"%(seq)
+                    print ("timeout on seq %d"%(seq))
                     if(self.retrans[seq]["attempts"] > self.max_attempts):
-                        print "******** WARNING *********"
-                        print " Tx Pkt Seq = %d expired after max attempts!"%(seq);
+                        print ("******** WARNING *********")
+                        print (" Tx Pkt Seq = %d expired after max attempts!"%(seq));
                         del self.retrans[seq];
                         self.max_at = self.max_at + 1;
                     else:
@@ -89,7 +89,7 @@ class arq(gr.sync_block):
     def tx_handler(self, msg):
         self.tx_cnt = self.tx_cnt + 1;
         if(len(self.retrans) > 1000):
-            print "WARNING!!!!!!!!! DISCARDING PACKET BECAUSE RE-TX QUEUE IS TOO LONG!"
+            print ("WARNING!!!!!!!!! DISCARDING PACKET BECAUSE RE-TX QUEUE IS TOO LONG!")
             return
         meta = pmt.car(msg);
         data_in = array.array('B', pmt.u8vector_elements(pmt.cdr(msg)))
@@ -118,7 +118,7 @@ class arq(gr.sync_block):
             meta = pmt.dict_add(meta, pmt.intern("arq_seq"), pmt.from_long(seq));
 
             if(self.rx_record.has_key(seq)):
-                print "duplicate recieve data pkt seq! %d"%(seq)
+                print ("duplicate recieve data pkt seq! %d"%(seq))
                 return;
             self.rx_record[seq] = time.time();
 
@@ -131,32 +131,33 @@ class arq(gr.sync_block):
             self.ack_rx_cnt = self.ack_rx_cnt + 1;
             # set pkt ack'd locally
             seq = struct.unpack("<i", self.pack_bits(data_list[8:8+32]))[0];
-            print "got pkt ack (%d)"%(seq)
+            print ("got pkt ack (%d)"%(seq))
             self.ack(seq);
             return;           
 
         # fall through fail
-        print "got invalid ARQ header, discarding!"
+        print ("got invalid ARQ header, discarding!")
 
-    def send_data(self, pkt_idx, (meta,data)):
-        print "SENDING DATA %d"%(pkt_idx);
+    def send_data(self, pkt_idx, mesg):
+        meta,data=mesg
+        print ("SENDING DATA %d"%(pkt_idx));
         data = self.operations["data"] + self.unpack_bytes(struct.pack("<i", pkt_idx)) + data.tolist();
         self.message_port_pub(pmt.intern("tx_out"), pmt.cons(meta,pmt.init_u8vector(len(data),data)));
 
     # send selective ack message
     def send_ack(self, seq):
-        print "SENDING ACK: %d"%(seq)
+        print ("SENDING ACK: %d"%(seq))
         self.ack_tx_cnt = self.ack_tx_cnt + 1;
         pkt = self.operations["ack"] + self.unpack_bytes(struct.pack("<i", seq));
         self.message_port_pub(pmt.intern("tx_out"), pmt.cons(pmt.PMT_NIL,pmt.init_u8vector(len(pkt),pkt)));
 
     def ack(self, seq):
-        print "setting %d to received"%(seq);
+        print ("setting %d to received"%(seq));
         if(self.retrans.has_key(seq)):
             del self.retrans[seq];
             #print "removed ok"
         else:
-            print "ack'ed pkt not found :: duplicate ack?"
+            print ("ack'ed pkt not found :: duplicate ack?")
 
     def work(self, input_items, output_items):
         pass

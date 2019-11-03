@@ -32,7 +32,7 @@ class length_detect(gr.sync_block):
 
         # discard bursts where we dont find an end
         if idx == start_offset:
-            print "WARNING: length detect: discarding burst"
+            print ("WARNING: length detect: discarding burst")
             return
 
         # tack on some metadata

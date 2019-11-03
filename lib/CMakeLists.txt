@@ -30,43 +30,73 @@ list(APPEND burst_sources
     length_detect_c_impl.cc
     synchronizer_v4_impl.cc
     qa_helpers.cc )
+    
+set(burst_sources "${burst_sources}" PARENT_SCOPE)
+if(NOT burst_sources)
+	MESSAGE(STATUS "No C++ sources... skipping lib/")
+	return()
+endif(NOT burst_sources)
 
 add_library(gnuradio-burst SHARED ${burst_sources})
-target_link_libraries(gnuradio-burst ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES} ${GNURADIO_EVENTSTREAM_LIBRARIES} ${GSL_LIBRARIES} ${CPPUNIT_LIBRARIES} ${MAPPER_LIBRARIES})
+target_link_libraries(gnuradio-burst ${Boost_LIBRARIES} gnuradio::gnuradio-runtime
+	gnuradio::gnuradio-filter
+	gnuradio::gnuradio-fft
+gnuradio::gnuradio-pmt ${MAPPER_LIBRARIES})
+
+target_include_directories(gnuradio-burst
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/>
+    PUBLIC $<INSTALL_INTERFACE:include>
+  )
+  
 set_target_properties(gnuradio-burst PROPERTIES DEFINE_SYMBOL "gnuradio_burst_EXPORTS")
+
+if(APPLE)
+    set_target_properties(gnuradio-burst PROPERTIES
+        INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
+    )
+endif(APPLE)
 
 ########################################################################
 # Install built library files
 ########################################################################
-install(TARGETS gnuradio-burst
-    LIBRARY DESTINATION lib${LIB_SUFFIX} # .so/.dylib file
-    ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib file
-    RUNTIME DESTINATION bin              # .dll file
-)
+include(GrMiscUtils)
+GR_LIBRARY_FOO(gnuradio-burst RUNTIME_COMPONENT "burst_runtime" DEVEL_COMPONENT "burst_devel")
+
+########################################################################
+# Print summary
+########################################################################
+message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
 
 ########################################################################
 # Build and register unit test
 ########################################################################
 include(GrTest)
 
-include_directories(${CPPUNIT_INCLUDE_DIRS})
-
+# If your unit tests require special include paths, add them here
+#include_directories()
+# List all files that contain Boost.UTF unit tests here
 list(APPEND test_burst_sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_burst.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_synchronizer_v4.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_burst.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_helpers.cc
 )
+# Anything we need to link to for the unit tests go here
+list(APPEND GR_TEST_TARGET_DEPS gnuradio-burst)
 
-add_executable(test-burst ${test_burst_sources})
+if(NOT test_burst_sources)
+    MESSAGE(STATUS "No C++ unit tests... skipping")
+    return()
+endif(NOT test_burst_sources)
 
-target_link_libraries(
-  test-burst
-  ${GNURADIO_RUNTIME_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${CPPUNIT_LIBRARIES}
-  ${MAPPER_LIBRARIES}
-  gnuradio-burst
-)
+foreach(qa_file ${test_burst_sources})
+    GR_ADD_CPP_TEST("burst_${qa_file}"
+        ${CMAKE_CURRENT_SOURCE_DIR}/${qa_file}
+    )
+endforeach(qa_file)
 
 GR_ADD_TEST(test_burst test-burst)
+
+########################################################################
+# Print summary
+########################################################################
+message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Building for version: ${VERSION} / ${LIBVER}")

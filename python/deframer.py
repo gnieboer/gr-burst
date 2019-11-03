@@ -41,7 +41,7 @@ class deframer(gr.sync_block):
             (prefix, pktlen) = struct.unpack('<hh', datab[0:4]);
             pprint.pprint({"prefix":hex(prefix), "pktlen":pktlen, "pktlen_bytes":pktlen/8});
             if(not (prefix == 0x1337)):
-                print "Deframer: BAD PREFIX!"
+                print ("Deframer: BAD PREFIX!")
                 return;
     
             # check header crc
@@ -49,18 +49,18 @@ class deframer(gr.sync_block):
             hcrc = struct.unpack('i', datab[4:8])[0]
     #        print "CRC: " + str((c2,hcrc))
             if not (c2 == hcrc):
-                print "Deframer: bad header crc"
+                print ("Deframer: bad header crc")
                 return;
             self.npkt_hok = self.npkt_hok + 1;
     
             # make sure we got enough bits for the given header len
             if(len(data) < (pktlen/8 + 8 + 4)):
-                print "Deframer: not enough bits received for full payload!"
-                print "Deframer: pktlen field = %d, received = %d\n"%(pktlen, len(data))
+                print ("Deframer: not enough bits received for full payload!")
+                print ("Deframer: pktlen field = %d, received = %d\n"%(pktlen, len(data)))
                 return;
     
             if(not (pktlen % 8 == 0)):
-                print "Deframer: payload should be a multiple of 8"
+                print ("Deframer: payload should be a multiple of 8")
                 return
     
             # extract header bytes
@@ -71,24 +71,24 @@ class deframer(gr.sync_block):
     #        print payload;
             ex_crc2 = datab[(8+pktlen/8):(8+pktlen/8+4)];
         except:
-            print 'Not enough data to read! dropping'
+            print ('Not enough data to read! dropping')
             return
         try:
             c1h = struct.unpack('i', ex_crc2)[0]
             #print "rx payload CRC = %d (%s)"%(c1h, ":".join("{:02x}".format(ord(c)) for c in ex_crc2))
         except:
-            print "shortened packet length dropping"
+            print ("shortened packet length dropping")
             return
 #        print "CRC2:" + str((c1, c1h));          
         if(not c1 == c1h):
-            print "Failed payload CRC"
+            print ("Failed payload CRC")
             return
 
 #        print "BURST OK!"
         self.npkt_ok = self.npkt_ok + 1;
         pct_ok = 100.0*self.npkt_ok / self.npkt;
         pct_hok = 100.0*self.npkt_hok / self.npkt;
-        print "Deframer: Percent ok = %f (%f header)%%"%(pct_ok, pct_hok);
+        print ("Deframer: Percent ok = %f (%f header)%%"%(pct_ok, pct_hok));
 
         # send it on its way
         payload = numpy.fromstring(payload, dtype=numpy.uint8);
